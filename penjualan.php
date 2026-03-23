@@ -3,6 +3,8 @@ include './functions/function.php';
 
 $today = date('Y-m-d');
 $transactions = getData("SELECT * FROM tb_penjualan WHERE tanggal = '$today' ORDER BY tanggal ASC");
+$transaction_recap = getData("SELECT COUNT(*) AS total_transaksi, SUM(total) AS total_pendapatan FROM tb_penjualan WHERE tanggal = '$today'");
+$count_sold_products = getData("SELECT SUM(jumlah) AS total FROM tb_detail_penjualan WHERE created_at = '$today'");
 
 // Cek rentang tanggal
 if (isset($_POST['cek_tanggal'])) { 
@@ -358,123 +360,69 @@ if (isset($_POST['cek_tanggal'])) {
           </div>
           <!-- end page title end breadcrumb -->
           <div class="row">
-            <div class="col-lg-3">
-              <div class="card card-eco">
+            <div class="col-lg-12">
+              <div class="card">
                 <div class="card-body">
+                  <h4 class="mt-0 header-title">Rekapitulasi Penjualan Per Hari ini</h4>
+
                   <div class="row">
-                    <div class="col-8">
-                      <h4 class="title-text mt-0">Visits</h4>
-                      <h3 class="font-weight-semibold mb-1">24k</h3>
-                      <p class="mb-0 text-muted text-truncate">
-                        <span class="text-success"
-                          ><i class="mdi mdi-trending-up"></i>8.5%</span
-                        >Up From Yesterday
-                      </p>
-                    </div>
-                    <!--end col-->
-                    <div class="col-4 text-center align-self-center">
-                      <!-- <span class="card-eco-icon">👳🏻</span> -->
-                      <i
-                        class="dripicons-user-group card-eco-icon align-self-center"
-                      ></i>
-                    </div>
-                    <!--end col-->
-                  </div>
-                  <!--end row-->
-                  <div class="bg-pattern"></div>
-                </div>
-                <!--end card-body-->
-              </div>
-              <!--end card-->
-            </div>
-            <!--end col-->
-            <div class="col-lg-3">
-              <div class="card card-eco">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-8">
-                      <h4 class="title-text mt-0">New Orders</h4>
-                      <h3 class="font-weight-semibold mb-1">10k</h3>
-                      <p class="mb-0 text-muted text-truncate">
-                        <span class="text-success"
-                          ><i class="mdi mdi-trending-up"></i>1.5%</span
+                    <div class="col-lg-6">
+                      <div class="form-group row">
+                        <label
+                          for="total_transaksi"
+                          class="col-sm-3 col-form-label text-right"
+                          >Total Transaksi</label
                         >
-                        Up From Last Week
-                      </p>
-                    </div>
-                    <!--end col-->
-                    <div class="col-4 text-center align-self-center">
-                      <!-- <span class="card-eco-icon">🛒</span> -->
-                      <i
-                        class="dripicons-cart card-eco-icon align-self-center"
-                      ></i>
-                    </div>
-                    <!--end col-->
-                  </div>
-                  <!--end row-->
-                  <div class="bg-pattern"></div>
-                </div>
-                <!--end card-body-->
-              </div>
-              <!--end card-->
-            </div>
-            <!--end col-->
-            <div class="col-lg-3">
-              <div class="card card-eco">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-8">
-                      <h4 class="title-text mt-0">Return Orders</h4>
-                      <h3 class="font-weight-semibold mb-1">8400</h3>
-                      <p class="mb-0 text-muted text-truncate">
-                        <span class="text-danger"
-                          ><i class="mdi mdi-trending-down"></i>3%</span
+                        <div class="col-sm-9">
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="total_transaksi"
+                            name="total_transaksi"
+                            value=<?= $transaction_recap[0]['total_transaksi']; ?>
+                            readonly
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label
+                          for="total_pendapatan"
+                          class="col-sm-3 col-form-label text-right"
+                          >Total Pendapatan</label
                         >
-                        Down From Last Month
-                      </p>
+                        <div class="col-sm-9">
+                          <input
+                            class="form-control"
+                            type="text"
+                            id="total_pendapatan"
+                            name="total_pendapatan"
+                            value="Rp. <?= number_format($transaction_recap[0]['total_pendapatan'], 0, ',', '.'); ?>"
+                            readonly
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <!--end col-->
-                    <div class="col-4 text-center align-self-center">
-                      <!-- <span class="card-eco-icon">🎲</span> -->
-                      <i
-                        class="dripicons-jewel card-eco-icon align-self-center"
-                      ></i>
-                    </div>
-                    <!--end col-->
-                  </div>
-                  <!--end row-->
-                  <div class="bg-pattern"></div>
-                </div>
-                <!--end card-body-->
-              </div>
-              <!--end card-->
-            </div>
-            <!--end col-->
-            <div class="col-lg-3">
-              <div class="card card-eco">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-8">
-                      <h4 class="title-text mt-0">Revenue</h4>
-                      <h3 class="font-weight-semibold mb-1">$1590</h3>
-                      <p class="mb-0 text-muted text-truncate">
-                        <span class="text-success"
-                          ><i class="mdi mdi-trending-up"></i>10.5%</span
+
+                    <div class="col-lg-6">
+                      <div class="form-group row">
+                        <label
+                          for="produk_terjual"
+                          class="col-sm-3 col-form-label text-right"
+                          >Produk Terjual</label
                         >
-                        Up From Yesterday
-                      </p>
+                        <div class="col-sm-9">
+                          <input
+                            class="form-control"
+                            type="search"
+                            id="produk_terjual"
+                            name="produk_terjual"
+                            value=<?= $count_sold_products[0]['total']; ?>
+                            readonly
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <!--end col-->
-                    <div class="col-4 text-center align-self-center">
-                      <!-- <span class="card-eco-icon">💰</span> -->
-                      <i
-                        class="dripicons-wallet card-eco-icon align-self-center"
-                      ></i>
-                    </div>
-                    <!--end col-->
                   </div>
-                  <!--end row-->
-                  <div class="bg-pattern"></div>
                 </div>
                 <!--end card-body-->
               </div>
